@@ -13,13 +13,14 @@ export class LocationService {
   ) {}
 
   async getLocation(ip: string) {
-    const cachedLocation = await this.cacheManager.get(ip);
+    const cachedKey = 'L' + ip;
+    const cachedLocation = await this.cacheManager.get(cachedKey);
     if (cachedLocation) return cachedLocation;
 
     const locationApiKey = this.configService.get<string>('LOCATION_API_KEY');
     const locationApiBaseUrl = this.configService.get<string>('LOCATION_API_BASE_URL');
 
-    if (!locationApiKey || !locationApiBaseUrl) throw new Error;
+    if (!locationApiKey || !locationApiBaseUrl) throw new Error('Location service');
 
     const response = await lastValueFrom(
       this.httpService.get(locationApiBaseUrl, {
@@ -30,10 +31,8 @@ export class LocationService {
       }),
     );
 
-    console.log(response.data);
-
     const location = response.data;
-    await this.cacheManager.set(ip, location);
+    await this.cacheManager.set(cachedKey, location);
     return location;
   }
 }

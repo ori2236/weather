@@ -1,12 +1,12 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { AppService } from './app.service';
-import { LocationService } from './location/location.service';
+import { WeatherService } from './weather/weather.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly locationService: LocationService,
+    private readonly weatherService: WeatherService,
   ) {}
 
   @Get()
@@ -15,7 +15,7 @@ export class AppController {
   }
 
   @Get('test-location')
-  async testLocation(@Query('ip') ip: string) {
-    return this.locationService.getLocation("79.177.141.144");
+  async testLocation(@Query('location') location: string) {
+    return this.weatherService.getWeather('32.0809,33.78123');
   }
 }
