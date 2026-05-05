@@ -3,17 +3,23 @@ import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
+import { LocationService } from '../location/location.service';
 
 @Injectable()
 export class WeatherService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
+    private readonly locationService: LocationService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
-  async getWeather(location: string) {
-    const cachedKey = 'W' + location;
+  async getWeather(ip: string) {
+    const location = await this.locationService.getLocation(ip);
+    const latitude = location.latitude;
+    const longitude = location.longitude;
+
+    const cachedKey = `W${latitude},${longitude}`;
     const cachedWeather = await this.cacheManager.get(cachedKey);
     if (cachedWeather) return cachedWeather;
 
@@ -22,13 +28,14 @@ export class WeatherService {
       'WEATHER_API_BASE_URL',
     );
 
-    if (!weatherApiKey || !weatherApiBaseUrl) throw new Error('Weather service');
+    if (!weatherApiKey || !weatherApiBaseUrl)
+      throw new Error('Weather service');
 
     const response = await lastValueFrom(
       this.httpService.get(weatherApiBaseUrl, {
         params: {
           key: weatherApiKey,
-          q: location,
+          q: `${latitude},${longitude}`,
         },
       }),
     );
