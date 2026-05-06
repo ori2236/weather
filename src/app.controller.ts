@@ -1,6 +1,7 @@
-import { Controller, Get, Ip, Query } from '@nestjs/common';
+import { Controller, Get, Ip, Query, UseInterceptors } from '@nestjs/common';
 import { AppService } from './app.service';
 import { WeatherService } from './weather/weather.service';
+import { LoggingInterceptor } from './logging/logging.interceptor';
 
 @Controller()
 export class AppController {
@@ -14,6 +15,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @UseInterceptors(LoggingInterceptor)
   @Get('weather')
   async testLocation(@Query('ip') ip: string) {
     return this.weatherService.getWeather(ip);
