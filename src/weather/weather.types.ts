@@ -1,4 +1,4 @@
-import { LocationCoordinanates } from '../location/location.types';
+import { Location } from '../location/location.types';
 
 interface WeatherCondition {
   text: string;
@@ -58,7 +58,7 @@ export interface WeatherResponseFromAPI {
   current: WeatherCurrent;
 }
 
-export interface WeatherResponse {
-  location: LocationCoordinanates;
+export interface Weather {
+  location: Location;
   current: WeatherCurrent;
 }
