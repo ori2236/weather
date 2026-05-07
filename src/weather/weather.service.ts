@@ -4,7 +4,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
 import { LocationService } from '../location/location.service';
-import { WeatherResponse } from './weather.types';
+import { WeatherResponse, WeatherResponseFromAPI } from './weather.types';
 
 @Injectable()
 export class WeatherService {
@@ -23,7 +23,8 @@ export class WeatherService {
     const longitude = location.longitude;
 
     const cachedKey = `W${latitude},${longitude}`;
-    const cachedWeather = await this.cacheManager.get<WeatherResponse>(cachedKey);
+    const cachedWeather =
+      await this.cacheManager.get<WeatherResponse>(cachedKey);
     if (cachedWeather) {
       this.logger.log('cache hit in weather');
       return cachedWeather;
@@ -43,7 +44,7 @@ export class WeatherService {
     }
     try {
       const response = await lastValueFrom(
-        this.httpService.get<WeatherResponse>(weatherApiBaseUrl, {
+        this.httpService.get<WeatherResponseFromAPI>(weatherApiBaseUrl, {
           params: {
             key: weatherApiKey,
             q: `${latitude},${longitude}`,
@@ -51,7 +52,8 @@ export class WeatherService {
         }),
       );
 
-      const weather = response.data;
+      const weatherCurrent = response.data.current;
+      const weather: WeatherResponse = { current: weatherCurrent, location };
       await this.cacheManager.set(cachedKey, weather);
       this.logger.log(`Weather fetched successfully for ${ip}`);
       return weather;

@@ -1,20 +1,12 @@
-export interface WeatherResponse {
-  location: WeatherLocation;
-  current: WeatherCurrent;
+import { LocationCoordinanates } from '../location/location.types';
+
+interface WeatherCondition {
+  text: string;
+  icon: string;
+  code: number;
 }
 
-export interface WeatherLocation {
-  name: string;
-  region: string;
-  country: string;
-  lat: number;
-  lon: number;
-  tz_id: string;
-  localtime_epoch: number;
-  localtime: string;
-}
-
-export interface WeatherCurrent {
+interface WeatherCurrent {
   last_updated_epoch: number;
   last_updated: string;
   temp_c: number;
@@ -50,8 +42,23 @@ export interface WeatherCurrent {
   gti: number;
 }
 
-export interface WeatherCondition {
-  text: string;
-  icon: string;
-  code: number;
+interface WeatherLocation {
+  name: string;
+  region: string;
+  country: string;
+  lat: number;
+  lon: number;
+  tz_id: string;
+  localtime_epoch: number;
+  localtime: string;
+}
+
+export interface WeatherResponseFromAPI {
+  location: WeatherLocation;
+  current: WeatherCurrent;
+}
+
+export interface WeatherResponse {
+  location: LocationCoordinanates;
+  current: WeatherCurrent;
 }

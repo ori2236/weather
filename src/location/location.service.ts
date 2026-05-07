@@ -3,7 +3,10 @@ import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
-import { LocationResponse } from './location.types';
+import {
+  LocationCoordinanates,
+  LocationResponseFromAPI,
+} from './location.types';
 
 @Injectable()
 export class LocationService {
@@ -15,10 +18,10 @@ export class LocationService {
 
   private readonly logger = new Logger(LocationService.name);
 
-  async getLocation(ip: string): Promise<LocationResponse> {
+  async getLocation(ip: string): Promise<LocationCoordinanates> {
     const cachedKey = 'L' + ip;
     const cachedLocation =
-      await this.cacheManager.get<LocationResponse>(cachedKey);
+      await this.cacheManager.get<LocationCoordinanates>(cachedKey);
     if (cachedLocation) {
       this.logger.log('cache hit in location');
       return cachedLocation;
@@ -39,7 +42,7 @@ export class LocationService {
 
     try {
       const response = await lastValueFrom(
-        this.httpService.get<LocationResponse>(locationApiBaseUrl, {
+        this.httpService.get<LocationResponseFromAPI>(locationApiBaseUrl, {
           params: { ip },
           headers: {
             Authorization: 'Bearer ' + locationApiKey,
@@ -47,7 +50,10 @@ export class LocationService {
         }),
       );
 
-      const location = response.data;
+      const latitude = response.data.latitude;
+      const longitude = response.data.longitude;
+      const location: LocationCoordinanates = { latitude, longitude };
+
       await this.cacheManager.set(cachedKey, location);
       this.logger.log(`Location fetched successfully for ${ip}`);
       return location;
