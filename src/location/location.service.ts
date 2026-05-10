@@ -4,7 +4,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
 import { Location, LocationResponseFromAPI } from './location.types';
-import { ENEMY_COUNTRIES } from '../repositories/enemy-countries.repository';
+import { ENEMY_COUNTRIES } from '../repositories/enemyExeption.repository';
 import { EnemyException } from '../exceptions/enemy.exception';
 
 @Injectable()

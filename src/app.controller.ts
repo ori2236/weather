@@ -4,14 +4,16 @@ import {
   Ip,
   Query,
   UseFilters,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { WeatherService } from './weather/weather.service';
-import { LoggingInterceptor } from './logging/logging.interceptor';
-import { EnemyExceptionFilter } from './filters/enemy-exception.filter';
+import { LoggingInterceptor } from './interceptors/logging.interceptor';
+import { EnemyExceptionFilter } from './filters/enemyException.filter';
 import { UnitPipe } from './pipes/unitPipe.pipe';
 import type { TemperatureUnit } from './pipes/unitPipe.types';
+import { MindYourOwnBusinessGuard } from './guards/mindYourOwnBusiness.guard';
 
 @Controller()
 export class AppController {
@@ -25,6 +27,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @UseGuards(MindYourOwnBusinessGuard)
   @UseInterceptors(LoggingInterceptor)
   @UseFilters(EnemyExceptionFilter)
   @Get('weather')

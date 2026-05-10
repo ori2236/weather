@@ -6,7 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Weather } from '../weather/weather.types';
 
 @Injectable()
@@ -25,13 +25,14 @@ export class LoggingInterceptor implements NestInterceptor {
         const latitude = weather.location.latitude;
         const longitude = weather.location.longitude;
         const country_name = weather.location.country_name;
-      
+
         const location = `${country_name} (${latitude},${longitude})`;
 
         this.logger.log(
           `fetching weather took ${timeTook}ms for ip ${ip} locate at ${location}`,
         );
       }),
+      map((weather: Weather) => weather.current),
     );
   }
 }
