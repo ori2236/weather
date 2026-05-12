@@ -21,6 +21,10 @@ export class WeatherService {
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
+  private replaceLocalIp (ip: string){
+    return ip === '::1' ? '79.177.141.144' : ip;
+  }
+
   private filterByTemperature(
     weather: WeatherCurrent,
     unit: TemperatureUnit,
@@ -54,10 +58,14 @@ export class WeatherService {
   private readonly logger = new Logger(WeatherService.name);
 
   async getWeather(ip: string, unit: TemperatureUnit): Promise<Weather> {
-    const location = await this.locationService.getLocation(ip);
+    console.log({ip})
+    const verifiedIp = this.replaceLocalIp(ip);
+    console.log({ verifiedIp });
+    const location = await this.locationService.getLocation(verifiedIp);
     const latitude = location.latitude;
     const longitude = location.longitude;
 
+    console.log({latitude}, {longitude})
     const cachedKey = `W${latitude},${longitude}`;
     const cachedWeather =
       await this.cacheManager.get<WeatherCurrent>(cachedKey);
@@ -96,10 +104,10 @@ export class WeatherService {
 
       const weatherWithUnits = this.filterByTemperature(weatherCurrent, unit);
       const weather: Weather = { current: weatherWithUnits, location };
-      this.logger.log(`Weather fetched successfully for ${ip}`);
+      this.logger.log(`Weather fetched successfully for ${verifiedIp}`);
       return weather;
     } catch (error) {
-      this.logger.error(`Failed to fetch weather for ${ip}`);
+      this.logger.error(`Failed to fetch weather for ${verifiedIp}`);
       throw error;
     }
   }

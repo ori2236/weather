@@ -1,9 +1,12 @@
-import { Injectable, PipeTransform } from '@nestjs/common';
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { TemperatureUnit } from './unitPipe.types';
 
 @Injectable()
-export class UnitPipe implements PipeTransform {
-  transform(value: TemperatureUnit): TemperatureUnit {
+export class UnitPipe implements PipeTransform<
+  string | undefined,
+  TemperatureUnit
+> {
+  transform(value: string | undefined): TemperatureUnit {
     if (value === undefined) {
       return 'c';
     }
@@ -12,6 +15,6 @@ export class UnitPipe implements PipeTransform {
       return value;
     }
 
-    throw new Error('unit must be c or f');
+    throw new BadRequestException('unit must be c or f');
   }
 }

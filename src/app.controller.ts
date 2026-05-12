@@ -7,7 +7,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { AppService } from './app.service';
 import { WeatherService } from './weather/weather.service';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { EnemyExceptionFilter } from './filters/enemyException.filter';
@@ -17,22 +16,14 @@ import { MindYourOwnBusinessGuard } from './guards/mindYourOwnBusiness.guard';
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    private readonly weatherService: WeatherService,
-  ) {}
-
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
+  constructor(private readonly weatherService: WeatherService) {}
 
   @UseGuards(MindYourOwnBusinessGuard)
   @UseInterceptors(LoggingInterceptor)
   @UseFilters(EnemyExceptionFilter)
   @Get('weather')
   async getWeather(
-    @Query('ip') ip: string,
+    @Ip() ip: string,
     @Query('unit', UnitPipe) unit: TemperatureUnit,
   ) {
     return this.weatherService.getWeather(ip, unit);
