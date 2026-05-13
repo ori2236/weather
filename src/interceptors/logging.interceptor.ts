@@ -14,9 +14,8 @@ export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(LoggingInterceptor.name);
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const request = context.switchToHttp().getRequest();
-    const ip = request.ip;
-
+    const response = context.switchToHttp().getResponse();
+    
     const timeBefore = Date.now();
 
     return next.handle().pipe(
@@ -26,6 +25,7 @@ export class LoggingInterceptor implements NestInterceptor {
         const longitude = weather.location.longitude;
         const country_name = weather.location.country_name;
 
+        const ip = response.locals.ip;
         const location = `${country_name} (${latitude},${longitude})`;
 
         this.logger.log(
