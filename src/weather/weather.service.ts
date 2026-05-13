@@ -10,7 +10,10 @@ import {
   WeatherByUnit,
   WeatherCurrent,
 } from './weather.types';
-import type { TemperatureUnit } from '../pipes/unitPipe.types';
+import {
+  TemperatureUnitName,
+  type TemperatureUnit,
+} from '../pipes/unitPipe.types';
 
 @Injectable()
 export class WeatherService {
@@ -25,7 +28,7 @@ export class WeatherService {
     weather: WeatherCurrent,
     unit: TemperatureUnit,
   ): WeatherByUnit {
-    const isF = unit === 'f';
+    const isF = unit === TemperatureUnitName.f;
 
     const {
       temp_c,
