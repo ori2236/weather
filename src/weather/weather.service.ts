@@ -14,9 +14,10 @@ import {
   TemperatureUnitName,
   type TemperatureUnit,
 } from '../pipes/unitPipe.types';
+import { WeatherInterface } from './weather.interface';
 
 @Injectable()
-export class WeatherService {
+export class WeatherService implements WeatherInterface {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
@@ -56,7 +57,7 @@ export class WeatherService {
 
   private readonly logger = new Logger(WeatherService.name);
 
-  async getWeather(ip: string, unit: TemperatureUnit): Promise<Weather> {
+  async getWeather(ip: string, unit: TemperatureUnit) {
     const location = await this.locationService.getLocation(ip);
     const latitude = location.latitude;
     const longitude = location.longitude;

@@ -6,9 +6,10 @@ import { lastValueFrom } from 'rxjs';
 import { Location, LocationResponseFromAPI } from './location.types';
 import { ENEMY_COUNTRIES } from '../repositories/enemyExeption.repository';
 import { EnemyException } from '../exceptions/enemy.exception';
+import { LocationInterface } from './location.interface';
 
 @Injectable()
-export class LocationService {
+export class LocationService implements LocationInterface {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
@@ -51,7 +52,7 @@ export class LocationService {
     }
   }
 
-  async getLocation(ip: string): Promise<Location> {
+  async getLocation(ip: string) {
     const cachedKey = 'L' + ip;
     const cachedLocation = await this.cacheManager.get<Location>(cachedKey);
     if (cachedLocation) {

@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter, Logger } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { EnemyException } from '../exceptions/enemy.exception';
 

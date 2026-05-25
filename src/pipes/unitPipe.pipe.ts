@@ -10,7 +10,7 @@ export class UnitPipe implements PipeTransform<
     const result = unitSchema.safeParse(value);
 
     if (!result.success) {
-      throw new BadRequestException('unit must be c or f');
+      throw new BadRequestException(result.error);
     }
 
     return result.data;

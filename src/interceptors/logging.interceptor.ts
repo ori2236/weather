@@ -13,7 +13,7 @@ import { Weather } from '../weather/weather.types';
 export class LoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(LoggingInterceptor.name);
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler){
     const response = context.switchToHttp().getResponse();
     
     const timeBefore = Date.now();

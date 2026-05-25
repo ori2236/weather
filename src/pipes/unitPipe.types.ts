@@ -7,3 +7,4 @@ export const TemperatureUnitName = {
 export type TemperatureUnit = keyof typeof TemperatureUnitName;
 
 export const unitSchema = zod.enum(TemperatureUnitName).default('c');
+
